@@ -5,257 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام المختبر البيطري</title>
     <style>
-        body { font-family: 'Tahoma', sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; color: #333; }
-        .screen { display: none; padding: 20px; max-width: 100%; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+        .screen { display: none; padding: 20px; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select, button, textarea { 
-            width: 100%; 
-            padding: 10px; 
-            margin-top: 5px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button { 
-            background-color: #4CAF50; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
+        input, select, button, textarea { width: 100%; padding: 10px; margin-top: 5px; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #45a049; }
-        .error { color: red; margin: 10px 0; }
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin: 20px 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 12px; 
-            text-align: right; 
-        }
-        th { 
-            background-color: #f2f2f2; 
-            position: sticky;
-            top: 0;
-        }
+        .error { color: red; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+        th { background-color: #f2f2f2; }
         .text-success { color: green; }
         .text-danger { color: red; }
         .text-warning { color: orange; }
         .btn-edit { background-color: #2196F3; }
         .btn-delete { background-color: #f44336; }
-        .report-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .no-data { 
-            text-align: center; 
-            padding: 40px;
-            color: #666;
-        }
-        @media print {
-            body * { visibility: hidden; }
-            #reportContent, #reportContent * { visibility: visible; }
-            #reportContent { position: absolute; left: 0; top: 0; width: 100%; }
-        }
-        @media (max-width: 768px) {
-            .report-header { flex-direction: column; align-items: flex-start; }
-            button { margin-bottom: 10px; }
-        }
+        .report-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
     </style>
-</head>
-<body>
-    <!-- شاشة الترحيب -->
-    <div id="welcomeScreen" class="screen">
-        <h1 style="text-align: center; margin-top: 100px;">مرحباً بكم في نظام المختبر البيطري</h1>
-        <p style="text-align: center;">جاري تحميل النظام...</p>
-    </div>
-
-    <!-- شاشة تسجيل الدخول -->
-    <div id="loginScreen" class="screen">
-        <div style="max-width: 400px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <h2 style="text-align: center; color: #2c3e50;">تسجيل الدخول</h2>
-            <div class="form-group">
-                <label for="empId">الرقم الوظيفي:</label>
-                <input type="text" id="empId" placeholder="أدخل الرقم الوظيفي">
-            </div>
-            <div class="form-group">
-                <label for="password">كلمة المرور:</label>
-                
-            </div>
-            <div id="loginErrors" class="error"></div>
-            <button onclick="login()" style="margin-top: 20px;">تسجيل الدخول</button>
-        </div>
-    </div>
-
-    <!-- شاشة لوحة التحكم -->
-    <div id="dashboardScreen" class="screen">
-        <div style="max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <h2 id="userWelcome" style="text-align: center; color: #2c3e50;"></h2>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
-                <button onclick="openScreen('entryScreen')">إدخال بيانات جديدة</button>
-                <button onclick="openScreen('reportScreen')">عرض التقارير</button>
-                <button id="settingsBtn" onclick="openScreen('settingsScreen')">الإعدادات</button>
-                <button id="usersBtn" onclick="openScreen('usersScreen')">إدارة المستخدمين</button>
-                <button onclick="logout()" style="background-color: #f44336;">تسجيل الخروج</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- شاشة إدخال البيانات -->
-    <div id="entryScreen" class="screen">
-        <div style="max-width: 800px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <h2 style="text-align: center; color: #2c3e50;">إدخال بيانات جديدة</h2>
-            <form id="dataForm">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="form-group">
-                        <label for="dateInput">تاريخ الفحص:</label>
-                        <input type="date" id="dateInput" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="siteName">الموقع:</label>
-                        <input type="text" id="siteName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="barnName">اسم الحظيرة:</label>
-                        <input type="text" id="barnName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="licenseNo">رقم الرخصة:</label>
-                        <input type="text" id="licenseNo">
-                    </div>
-                    <div class="form-group">
-                        <label for="animalType">نوع الحيوان:</label>
-                        <select id="animalType" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">جنس الحيوان:</label>
-                        <select id="gender" required>
-                            <option value="">اختر الجنس</option>
-                            <option value="ذكر">ذكر</option>
-                            <option value="أنثى">أنثى</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="sampleType">نوع العينة:</label>
-                        <select id="sampleType" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="testType">نوع الاختبار:</label>
-                        <select id="testType" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="resultType">نتيجة الفحص:</label>
-                        <select id="resultType" required></select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="notes">ملاحظات:</label>
-                    <textarea id="notes" rows="3"></textarea>
-                </div>
-                <div id="entryErrors" class="error"></div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <button type="submit">حفظ البيانات</button>
-                    <button type="button" onclick="goBack()" style="background-color: #f44336;">العودة</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- شاشة التقارير -->
-    <div id="reportScreen" class="screen">
-        <div style="max-width: 1000px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <h2 style="text-align: center; color: #2c3e50;">التقارير</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div class="form-group">
-                    <label for="fromDate">من تاريخ:</label>
-                    <input type="date" id="fromDate">
-                </div>
-                <div class="form-group">
-                    <label for="toDate">إلى تاريخ:</label>
-                    <input type="date" id="toDate">
-                </div>
-            </div>
-            <button onclick="generateReport()" style="margin-bottom: 20px;">عرض التقرير</button>
-            <button onclick="goBack()" style="background-color: #f44336; margin-bottom: 20px;">العودة</button>
-            <div id="reportContent"></div>
-        </div>
-    </div>
-
-    <!-- شاشة الإعدادات -->
-    <div id="settingsScreen" class="screen">
-        <div style="max-width: 800px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <h2 style="text-align: center; color: #2c3e50;">الإعدادات</h2>
-            <div class="form-group">
-                <label for="sampleList">أنواع العينات (مفصولة بفاصلة):</label>
-                <textarea id="sampleList" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="testList">أنواع الاختبارات (مفصولة بفاصلة):</label>
-                <textarea id="testList" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="resultList">النتائج المحتملة (مفصولة بفاصلة):</label>
-                <textarea id="resultList" rows="3"></textarea>
-            </div>
-            <div id="settingsErrors" class="error"></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button onclick="saveSettings()">حفظ الإعدادات</button>
-                <button onclick="goBack()" style="background-color: #f44336;">العودة</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- شاشة إدارة المستخدمين -->
-    <div id="usersScreen" class="screen">
-        <div style="max-width: 1000px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <h2 style="text-align: center; color: #2c3e50;">إدارة المستخدمين</h2>
-            
-            <h3 style="margin-top: 30px;">إضافة مستخدم جديد</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="form-group">
-                    <label for="newEmpId">الرقم الوظيفي:</label>
-                    <input type="text" id="newEmpId">
-                </div>
-                <div class="form-group">
-                    <label for="newName">اسم المستخدم:</label>
-                    <input type="text" id="newName">
-                </div>
-                <div class="form-group">
-                    <label for="newType">نوع المستخدم:</label>
-                    <select id="newType">
-                        <option value="">اختر النوع</option>
-                        <option value="مسؤول">مسؤول</option>
-                        <option value="فني">فني</option>
-                        <option value="سوق المواشي">سوق المواشي</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="newSite">الموقع:</label>
-                    <input type="text" id="newSite">
-                </div>
-                <div class="form-group">
-
-                </div>
-            </div>
-            <div id="userErrors" class="error"></div>
-            <button onclick="addUser()" style="margin-bottom: 30px;">إضافة مستخدم</button>
-            
-            <h3 style="border-top: 1px solid #eee; padding-top: 20px;">قائمة المستخدمين</h3>
-            <div id="usersList"></div>
-            <button onclick="goBack()" style="background-color: #f44336; margin-top: 20px;">العودة</button>
-        </div>
-    </div>
-
     <script type="module">
-        // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
         import { 
             getFirestore, collection, addDoc, getDocs, doc, deleteDoc, setDoc, getDoc 
@@ -298,56 +65,49 @@
             {en: "Camel", ar: "جمال"}
         ];
 
-        // ==================== Core Functions ====================
-
+        // Initialize the app
         async function startApp() {
             showScreen("welcomeScreen");
             setTimeout(() => showScreen("loginScreen"), 2000);
 
             // Load data from Firebase
-            try {
-                await Promise.all([
-                    loadUsersFromFirebase(),
-                    loadEntriesFromFirebase(),
-                    loadSettingsFromFirebase()
-                ]);
-                
-                // Initialize form fields
-                populateAnimalTypes();
-                populateSelect("sampleType", settings.samples);
-                populateSelect("testType", settings.tests);
-                populateSelect("resultType", settings.results);
+            await Promise.all([
+                loadUsersFromFirebase(),
+                loadEntriesFromFirebase(),
+                loadSettingsFromFirebase()
+            ]);
 
-                // Set today's date as default
-                const today = new Date().toISOString().slice(0, 10);
-                document.getElementById("dateInput").value = today;
-                document.getElementById("fromDate").value = today;
-                document.getElementById("toDate").value = today;
+            // Initialize form fields
+            populateAnimalTypes();
+            populateSelect("sampleType", settings.samples);
+            populateSelect("testType", settings.tests);
+            populateSelect("resultType", settings.results);
 
-                // Setup form handler
-                document.getElementById("dataForm").addEventListener("submit", function(e) {
-                    e.preventDefault();
-                    saveEntry();
-                });
+            // Set today's date as default
+            const today = new Date().toISOString().slice(0, 10);
+            document.getElementById("dateInput").value = today;
+            document.getElementById("fromDate").value = today;
+            document.getElementById("toDate").value = today;
 
-                // Hide admin buttons initially
-                document.getElementById("settingsBtn").style.display = "none";
-                document.getElementById("usersBtn").style.display = "none";
-            } catch (error) {
-                console.error("Initialization error:", error);
-                alert("حدث خطأ أثناء تحميل التطبيق. يرجى تحديث الصفحة.");
-            }
+            // Setup form handler
+            document.getElementById("dataForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                saveEntry();
+            });
+
+            // Hide admin buttons initially
+            document.getElementById("settingsBtn").style.display = "none";
+            document.getElementById("usersBtn").style.display = "none";
         }
 
-        // ==================== Firebase Operations ====================
-
+        // Firebase operations
         async function loadUsersFromFirebase() {
             try {
                 const querySnapshot = await getDocs(collection(db, "users"));
                 users = querySnapshot.docs.map(doc => doc.data());
             } catch (error) {
                 console.error("Error loading users:", error);
-                throw error;
+                alert("حدث خطأ في تحميل بيانات المستخدمين");
             }
         }
 
@@ -357,7 +117,7 @@
                 entries = querySnapshot.docs.map(doc => doc.data());
             } catch (error) {
                 console.error("Error loading entries:", error);
-                throw error;
+                alert("حدث خطأ في تحميل البيانات المدخلة");
             }
         }
 
@@ -370,7 +130,7 @@
                 }
             } catch (error) {
                 console.error("Error loading settings:", error);
-                throw error;
+                alert("حدث خطأ في تحميل الإعدادات");
             }
         }
 
@@ -410,8 +170,7 @@
             }
         }
 
-        // ==================== Authentication ====================
-
+        // Authentication functions
         async function login() {
             const empId = document.getElementById("empId").value.trim();
             const password = document.getElementById("password").value;
@@ -468,14 +227,12 @@
             }
         }
 
-        // ==================== Application Functions ====================
-
+        // Application functions
         function showScreen(screenId) {
             document.querySelectorAll(".screen").forEach(screen => {
                 screen.style.display = "none";
             });
             document.getElementById(screenId).style.display = "block";
-            window.scrollTo(0, 0);
         }
 
         function openScreen(screenId) {
@@ -500,23 +257,6 @@
                 document.getElementById("userWelcome").textContent = `مرحباً ${currentUser.name}`;
                 document.getElementById("siteName").value = currentUser.site || "";
             }
-        }
-
-        function populateAnimalTypes() {
-            const select = document.getElementById("animalType");
-            select.innerHTML = '';
-            
-            const defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.textContent = "اختر نوع الحيوان";
-            select.appendChild(defaultOption);
-
-            animalTypes.forEach(animal => {
-                const opt = document.createElement("option");
-                opt.value = animal.en;
-                opt.textContent = animal.ar;
-                select.appendChild(opt);
-            });
         }
 
         function populateSelect(id, options) {
@@ -671,7 +411,7 @@
             const originalContent = document.body.innerHTML;
             
             document.body.innerHTML = `
-                <div style="padding:20px;font-family:'Tahoma'">
+                <div style="padding:20px;font-family:'Arial'">
                     <h1 style="text-align:center;margin-bottom:30px">تقرير المختبر البيطري</h1>
                     ${printContent}
                 </div>
@@ -904,8 +644,7 @@
             }
         }
 
-        // ==================== Initialize App ====================
-
+        // Initialize the app when loaded
         window.onload = startApp;
         
         // Expose functions to HTML
@@ -922,5 +661,174 @@
         window.editUser = editUser;
         window.deleteUser = deleteUser;
     </script>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="screen">
+        <h1 style="text-align: center; margin-top: 100px;">مرحباً بكم في نظام المختبر البيطري</h1>
+        <p style="text-align: center;">جاري التحميل...</p>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <h2 style="text-align: center;">تسجيل الدخول</h2>
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="form-group">
+                <label for="empId">الرقم الوظيفي:</label>
+                <input type="text" id="empId" placeholder="أدخل الرقم الوظيفي">
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور:</label>
+                <input type="password" id="password" placeholder="أدخل كلمة المرور">
+            </div>
+            <div id="loginErrors" class="error" style="min-height: 20px;"></div>
+            <button onclick="login()" style="margin-top: 20px;">تسجيل الدخول</button>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen" class="screen">
+        <h2 id="userWelcome" style="text-align: center;"></h2>
+        <div style="max-width: 500px; margin: 0 auto;">
+            <button onclick="openScreen('entryScreen')" style="margin-bottom: 10px;">إدخال بيانات جديدة</button>
+            <button onclick="openScreen('reportScreen')" style="margin-bottom: 10px;">عرض التقارير</button>
+            <button id="settingsBtn" onclick="openScreen('settingsScreen')" style="margin-bottom: 10px;">الإعدادات</button>
+            <button id="usersBtn" onclick="openScreen('usersScreen')" style="margin-bottom: 10px;">إدارة المستخدمين</button>
+            <button onclick="logout()" style="background-color: #f44336;">تسجيل الخروج</button>
+        </div>
+    </div>
+
+    <!-- Entry Screen -->
+    <div id="entryScreen" class="screen">
+        <h2 style="text-align: center;">إدخال بيانات جديدة</h2>
+        <form id="dataForm" style="max-width: 600px; margin: 0 auto;">
+            <div class="form-group">
+                <label for="dateInput">تاريخ الفحص:</label>
+                <input type="date" id="dateInput" required>
+            </div>
+            <div class="form-group">
+                <label for="siteName">الموقع:</label>
+                <input type="text" id="siteName" required>
+            </div>
+            <div class="form-group">
+                <label for="barnName">اسم الحظيرة:</label>
+                <input type="text" id="barnName" required>
+            </div>
+            <div class="form-group">
+                <label for="licenseNo">رقم الرخصة:</label>
+                <input type="text" id="licenseNo">
+            </div>
+            <div class="form-group">
+                <label for="animalType">نوع الحيوان:</label>
+                <select id="animalType" required></select>
+            </div>
+            <div class="form-group">
+                <label for="gender">جنس الحيوان:</label>
+                <select id="gender" required>
+                    <option value="">اختر الجنس</option>
+                    <option value="ذكر">ذكر</option>
+                    <option value="أنثى">أنثى</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sampleType">نوع العينة:</label>
+                <select id="sampleType" required></select>
+            </div>
+            <div class="form-group">
+                <label for="testType">نوع الاختبار:</label>
+                <select id="testType" required></select>
+            </div>
+            <div class="form-group">
+                <label for="resultType">نتيجة الفحص:</label>
+                <select id="resultType" required></select>
+            </div>
+            <div class="form-group">
+                <label for="notes">ملاحظات:</label>
+                <textarea id="notes" rows="3"></textarea>
+            </div>
+            <div id="entryErrors" class="error" style="min-height: 20px;"></div>
+            <button type="submit">حفظ البيانات</button>
+            <button type="button" onclick="goBack()" style="background-color: #f44336; margin-top: 10px;">العودة</button>
+        </form>
+    </div>
+
+    <!-- Report Screen -->
+    <div id="reportScreen" class="screen">
+        <h2 style="text-align: center;">التقارير</h2>
+        <div style="max-width: 600px; margin: 0 auto;">
+            <div class="form-group">
+                <label for="fromDate">من تاريخ:</label>
+                <input type="date" id="fromDate">
+            </div>
+            <div class="form-group">
+                <label for="toDate">إلى تاريخ:</label>
+                <input type="date" id="toDate">
+            </div>
+            <button onclick="generateReport()">عرض التقرير</button>
+            <button onclick="goBack()" style="background-color: #f44336; margin-top: 10px;">العودة</button>
+            <div id="reportContent" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settingsScreen" class="screen">
+        <h2 style="text-align: center;">الإعدادات</h2>
+        <div style="max-width: 600px; margin: 0 auto;">
+            <div class="form-group">
+                <label for="sampleList">أنواع العينات (مفصولة بفاصلة):</label>
+                <textarea id="sampleList" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="testList">أنواع الاختبارات (مفصولة بفاصلة):</label>
+                <textarea id="testList" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="resultList">النتائج المحتملة (مفصولة بفاصلة):</label>
+                <textarea id="resultList" rows="3"></textarea>
+            </div>
+            <div id="settingsErrors" class="error" style="min-height: 20px;"></div>
+            <button onclick="saveSettings()">حفظ الإعدادات</button>
+            <button onclick="goBack()" style="background-color: #f44336; margin-top: 10px;">العودة</button>
+        </div>
+    </div>
+
+    <!-- Users Management Screen -->
+    <div id="usersScreen" class="screen">
+        <h2 style="text-align: center;">إدارة المستخدمين</h2>
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3>إضافة مستخدم جديد</h3>
+            <div class="form-group">
+                <label for="newEmpId">الرقم الوظيفي:</label>
+                <input type="text" id="newEmpId">
+            </div>
+            <div class="form-group">
+                <label for="newName">اسم المستخدم:</label>
+                <input type="text" id="newName">
+            </div>
+            <div class="form-group">
+                <label for="newType">نوع المستخدم:</label>
+                <select id="newType">
+                    <option value="">اختر النوع</option>
+                    <option value="مسؤول">مسؤول</option>
+                    <option value="فني">فني</option>
+                    <option value="سوق المواشي">سوق المواشي</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="newSite">الموقع:</label>
+                <input type="text" id="newSite">
+            </div>
+            <div class="form-group">
+                <label for="newPassword">كلمة المرور:</label>
+                <input type="password" id="newPassword">
+            </div>
+            <div id="userErrors" class="error" style="min-height: 20px;"></div>
+            <button onclick="addUser()">إضافة مستخدم</button>
+            
+            <h3 style="margin-top: 30px;">قائمة المستخدمين</h3>
+            <div id="usersList"></div>
+            <button onclick="goBack()" style="background-color: #f44336; margin-top: 20px;">العودة</button>
+        </div>
+    </div>
 </body>
 </html>
