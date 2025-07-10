@@ -5,657 +5,722 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام المختبر البيطري</title>
     <style>
-        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-        .screen { display: none; padding: 20px; }
-        .form-group { margin-bottom: 15px; }
-        input, select, button, textarea { width: 100%; padding: 10px; margin-top: 5px; }
-        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #45a049; }
-        .error { color: red; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
-        th { background-color: #f2f2f2; }
-        .text-success { color: green; }
-        .text-danger { color: red; }
-        .text-warning { color: orange; }
-        .btn-edit { background-color: #2196F3; }
-        .btn-delete { background-color: #f44336; }
-        .report-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #45a049;
+            --secondary: #2196F3;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --success: #4CAF50;
+            --light: #f5f5f5;
+            --dark: #333;
+            --gray: #888;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2f3a, #2c3e50);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .screen {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        input, select, button, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #0b7dda;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e68a00;
+        }
+        
+        .error {
+            color: var(--danger);
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(244, 67, 54, 0.1);
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .success {
+            color: var(--success);
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(76, 175, 80, 0.1);
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: right;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .text-success {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .text-danger {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .text-warning {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .report-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .report-meta {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 18px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .stat-card h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: 700;
+        }
+        
+        .card-1 { background: linear-gradient(135deg, #3498db, #1a5276); }
+        .card-2 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .card-3 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .card-4 { background: linear-gradient(135deg, #f39c12, #d35400); }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .action-buttons button {
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .action-buttons button i {
+            font-size: 28px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .logo-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 18px;
+        }
+        
+        .welcome-text {
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            margin: 40px 0;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 14px;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-header h2 {
+            color: var(--primary);
+        }
+        
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .screen {
+                padding: 20px;
+            }
+            
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
     </style>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
-        import { 
-            getFirestore, collection, addDoc, getDocs, doc, deleteDoc, setDoc, getDoc 
-        } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
-        import { 
-            getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword 
-        } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="screen">
+            <div class="logo-container">
+                <div class="logo"><i class="fas fa-paw"></i> النظام البيطري</div>
+                <div class="logo-subtitle">نظام إدارة المختبر البيطري المتكامل</div>
+            </div>
+            
+            <div class="welcome-text">
+                <p>مرحباً بكم في النظام البيطري المتكامل لإدارة الفحوصات والمختبرات</p>
+                <p>نظام ذكي يوفر حلولاً متكاملة لإدارة بيانات الفحوصات البيطرية</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="card card-1 stat-card">
+                    <h3><i class="fas fa-flask"></i> الفحوصات اليومية</h3>
+                    <div class="number">128</div>
+                </div>
+                <div class="card card-2 stat-card">
+                    <h3><i class="fas fa-check-circle"></i> النتائج السليمة</h3>
+                    <div class="number">89</div>
+                </div>
+                <div class="card card-3 stat-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> النتائج المرضية</h3>
+                    <div class="number">26</div>
+                </div>
+                <div class="card card-4 stat-card">
+                    <h3><i class="fas fa-users"></i> المستخدمين النشطين</h3>
+                    <div class="number">24</div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                نظام المختبر البيطري © 2023 - جميع الحقوق محفوظة
+            </div>
+        </div>
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAzXj2yxeKNUgw2wbyP5C6MKrj92A5-ZS8",
-            authDomain: "vet-lab-data.firebaseapp.com",
-            projectId: "vet-lab-data",
-            storageBucket: "vet-lab-data.appspot.com",
-            messagingSenderId: "817190318140",
-            appId: "1:817190318140:web:fe1827b6b226ddca4f1339",
-            measurementId: "G-NQ6LC0VFQ1"
-        };
+        <!-- Login Screen -->
+        <div id="loginScreen" class="screen">
+            <div class="form-header">
+                <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+                <p>الرجاء إدخال بيانات الدخول للوصول إلى النظام</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="empId"><i class="fas fa-id-card"></i> الرقم الوظيفي:</label>
+                    <input type="text" id="empId" placeholder="أدخل الرقم الوظيفي">
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> كلمة المرور:</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور">
+                </div>
+                <div id="loginErrors" class="error" style="min-height: 20px; display: none;"></div>
+                <button onclick="login()" style="margin-top: 20px;">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                
+                <div style="text-align: center; margin-top: 25px; color: var(--gray);">
+                    <p>نسيت كلمة المرور؟ <a href="#" style="color: var(--secondary);">إضغط هنا</a></p>
+                    <p>للحصول على مساعدة تواصل مع <a href="#" style="color: var(--secondary);">الدعم الفني</a></p>
+                </div>
+            </div>
+        </div>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+        <!-- Dashboard Screen -->
+        <div id="dashboardScreen" class="screen">
+            <div class="form-header">
+                <h2 id="userWelcome">مرحباً بك في النظام البيطري</h2>
+                <p>لوحة التحكم الرئيسية - آخر تحديث: <span id="currentDate"></span></p>
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="openScreen('entryScreen')" class="btn-secondary">
+                    <i class="fas fa-plus-circle"></i> إدخال بيانات جديدة
+                </button>
+                <button onclick="openScreen('reportScreen')" class="btn-secondary">
+                    <i class="fas fa-chart-bar"></i> عرض التقارير
+                </button>
+                <button id="settingsBtn" onclick="openScreen('settingsScreen')" class="btn-warning">
+                    <i class="fas fa-cog"></i> الإعدادات
+                </button>
+                <button id="usersBtn" onclick="openScreen('usersScreen')" class="btn-warning">
+                    <i class="fas fa-users-cog"></i> إدارة المستخدمين
+                </button>
+                <button onclick="logout()" class="btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+            
+            <div class="card">
+                <h3><i class="fas fa-history"></i> آخر الإدخالات</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>التاريخ</th>
+                                <th>الموقع</th>
+                                <th>نوع الحيوان</th>
+                                <th>نوع الاختبار</th>
+                                <th>النتيجة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>2023-10-15</td>
+                                <td>مزرعة النخيل</td>
+                                <td>أبقار</td>
+                                <td>فحص دم</td>
+                                <td class="text-success">سليم</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>2023-10-15</td>
+                                <td>مزرعة الوادي</td>
+                                <td>أغنام</td>
+                                <td>فحص بول</td>
+                                <td class="text-danger">مريض</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>2023-10-14</td>
+                                <td>سوق المواشي</td>
+                                <td>جمال</td>
+                                <td>فحص أنسجة</td>
+                                <td class="text-success">سليم</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>2023-10-14</td>
+                                <td>مزرعة الربيع</td>
+                                <td>ماعز</td>
+                                <td>فحص دم</td>
+                                <td class="text-warning">غير محدد</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>2023-10-13</td>
+                                <td>مزرعة النور</td>
+                                <td>أبقار</td>
+                                <td>فحص بول</td>
+                                <td class="text-success">سليم</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        // Application data
-        let users = [];
-        let currentUser = null;
-        let entries = [];
-        let settings = {
-            samples: ["دم", "بول", "خزعة"],
-            tests: ["فحص دم", "فحص بول", "فحص أنسجة"],
-            results: ["سليم", "مريض", "غير محدد"]
-        };
+        <!-- Entry Screen -->
+        <div id="entryScreen" class="screen">
+            <div class="form-header">
+                <h2><i class="fas fa-edit"></i> إدخال بيانات جديدة</h2>
+                <p>الرجاء تعبئة جميع الحقول المطلوبة</p>
+            </div>
+            
+            <div class="form-container">
+                <form id="dataForm">
+                    <div class="form-group">
+                        <label for="dateInput"><i class="fas fa-calendar"></i> تاريخ الفحص:</label>
+                        <input type="date" id="dateInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="siteName"><i class="fas fa-map-marker-alt"></i> الموقع:</label>
+                        <input type="text" id="siteName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="barnName"><i class="fas fa-home"></i> اسم الحظيرة:</label>
+                        <input type="text" id="barnName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="licenseNo"><i class="fas fa-id-badge"></i> رقم الرخصة:</label>
+                        <input type="text" id="licenseNo">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label for="animalType"><i class="fas fa-dog"></i> نوع الحيوان:</label>
+                            <select id="animalType" required>
+                                <option value="">اختر النوع</option>
+                                <option value="Sheep">خروف</option>
+                                <option value="Goat">ماعز</option>
+                                <option value="Cow">بقر</option>
+                                <option value="Camel">جمال</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender"><i class="fas fa-venus-mars"></i> جنس الحيوان:</label>
+                            <select id="gender" required>
+                                <option value="">اختر الجنس</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="أنثى">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label for="sampleType"><i class="fas fa-vial"></i> نوع العينة:</label>
+                            <select id="sampleType" required>
+                                <option value="">اختر النوع</option>
+                                <option value="دم">دم</option>
+                                <option value="بول">بول</option>
+                                <option value="خزعة">خزعة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="testType"><i class="fas fa-microscope"></i> نوع الاختبار:</label>
+                            <select id="testType" required>
+                                <option value="">اختر الاختبار</option>
+                                <option value="فحص دم">فحص دم</option>
+                                <option value="فحص بول">فحص بول</option>
+                                <option value="فحص أنسجة">فحص أنسجة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="resultType"><i class="fas fa-clipboard-check"></i> نتيجة الفحص:</label>
+                            <select id="resultType" required>
+                                <option value="">اختر النتيجة</option>
+                                <option value="سليم">سليم</option>
+                                <option value="مريض">مريض</option>
+                                <option value="غير محدد">غير محدد</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes"><i class="fas fa-sticky-note"></i> ملاحظات:</label>
+                        <textarea id="notes" rows="3" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
+                    </div>
+                    
+                    <div id="entryErrors" class="error" style="min-height: 20px; display: none;"></div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                        <button type="submit" style="background-color: var(--success);">
+                            <i class="fas fa-save"></i> حفظ البيانات
+                        </button>
+                        <button type="button" onclick="goBack()" style="background-color: var(--danger);">
+                            <i class="fas fa-arrow-left"></i> العودة
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-        // Animal types
-        const animalTypes = [
-            {en: "Sheep", ar: "خروف"},
-            {en: "Goat", ar: "ماعز"},
-            {en: "Cow", ar: "بقر"},
-            {en: "Camel", ar: "جمال"}
-        ];
-
+    <script>
         // Initialize the app
-        async function startApp() {
+        function startApp() {
             showScreen("welcomeScreen");
-            setTimeout(() => showScreen("loginScreen"), 2000);
-
-            // Load data from Firebase
-            await Promise.all([
-                loadUsersFromFirebase(),
-                loadEntriesFromFirebase(),
-                loadSettingsFromFirebase()
-            ]);
-
-            // Initialize form fields
-            populateAnimalTypes();
-            populateSelect("sampleType", settings.samples);
-            populateSelect("testType", settings.tests);
-            populateSelect("resultType", settings.results);
-
+            setTimeout(() => showScreen("loginScreen"), 3000);
+            
+            // Set current date
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("currentDate").textContent = now.toLocaleDateString('ar-EG', options);
+            
             // Set today's date as default
             const today = new Date().toISOString().slice(0, 10);
             document.getElementById("dateInput").value = today;
-            document.getElementById("fromDate").value = today;
-            document.getElementById("toDate").value = today;
-
-            // Setup form handler
-            document.getElementById("dataForm").addEventListener("submit", function(e) {
-                e.preventDefault();
-                saveEntry();
-            });
-
-            // Hide admin buttons initially
-            document.getElementById("settingsBtn").style.display = "none";
-            document.getElementById("usersBtn").style.display = "none";
         }
-
-        // Firebase operations
-        async function loadUsersFromFirebase() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "users"));
-                users = querySnapshot.docs.map(doc => doc.data());
-            } catch (error) {
-                console.error("Error loading users:", error);
-                alert("حدث خطأ في تحميل بيانات المستخدمين");
-            }
-        }
-
-        async function loadEntriesFromFirebase() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "entries"));
-                entries = querySnapshot.docs.map(doc => doc.data());
-            } catch (error) {
-                console.error("Error loading entries:", error);
-                alert("حدث خطأ في تحميل البيانات المدخلة");
-            }
-        }
-
-        async function loadSettingsFromFirebase() {
-            try {
-                const docRef = doc(db, "settings", "appSettings");
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    settings = docSnap.data();
-                }
-            } catch (error) {
-                console.error("Error loading settings:", error);
-                alert("حدث خطأ في تحميل الإعدادات");
-            }
-        }
-
-        async function saveUserToFirebase(user) {
-            try {
-                await setDoc(doc(db, "users", user.empId), user);
-            } catch (error) {
-                console.error("Error saving user:", error);
-                throw error;
-            }
-        }
-
-        async function saveEntryToFirebase(entry) {
-            try {
-                await addDoc(collection(db, "entries"), entry);
-            } catch (error) {
-                console.error("Error saving entry:", error);
-                throw error;
-            }
-        }
-
-        async function saveSettingsToFirebase() {
-            try {
-                await setDoc(doc(db, "settings", "appSettings"), settings);
-            } catch (error) {
-                console.error("Error saving settings:", error);
-                throw error;
-            }
-        }
-
-        async function deleteUserFromFirebase(empId) {
-            try {
-                await deleteDoc(doc(db, "users", empId));
-            } catch (error) {
-                console.error("Error deleting user:", error);
-                throw error;
-            }
-        }
-
-        // Authentication functions
-        async function login() {
-            const empId = document.getElementById("empId").value.trim();
-            const password = document.getElementById("password").value;
-            const errorElement = document.getElementById("loginErrors");
-
-            errorElement.textContent = "";
-
-            if (!empId || !password) {
-                errorElement.textContent = "الرجاء إدخال الرقم الوظيفي وكلمة المرور";
-                return;
-            }
-
-            try {
-                const userCredential = await signInWithEmailAndPassword(
-                    auth, 
-                    `${empId}@vetlab.com`, 
-                    password
-                );
-                
-                const user = users.find(u => u.empId === empId);
-                
-                if (user) {
-                    currentUser = user;
-                    updateUserWelcome();
-                    showScreen("dashboardScreen");
-                    createUserWithEmailAndPassword(auth, '70062@vetlab.com', '123456')
-  .then(() => {
-    const adminUser = {
-      empId: "70062",
-      name: "Admin",
-      type: "مسؤول",
-      site: "الادارة",
-      permissions: { manageUsers: true, manageSettings: true }
-    };
-    setDoc(doc(db, "users", "70062"), adminUser);
-    alert("تم إنشاء المسؤول بنجاح!");
-  });
-                    // Show/hide admin buttons based on permissions
-                    const isAdmin = user.permissions?.manageUsers || false;
-                    document.getElementById("settingsBtn").style.display = isAdmin ? "block" : "none";
-                    document.getElementById("usersBtn").style.display = isAdmin ? "block" : "none";
-                } else {
-                    errorElement.textContent = "الرقم الوظيفي غير مسجل في النظام";
-                    await signOut(auth);
-                }
-            } catch (error) {
-                console.error("Login error:", error);
-                errorElement.textContent = "خطأ في تسجيل الدخول: " + 
-                    (error.code === 'auth/wrong-password' ? "كلمة المرور غير صحيحة" : 
-                     error.code === 'auth/user-not-found' ? "المستخدم غير موجود" : 
-                     "حدث خطأ أثناء تسجيل الدخول");
-            }
-        }
-
-        async function logout() {
-            if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
-                try {
-                    await signOut(auth);
-                    currentUser = null;
-                    showScreen("loginScreen");
-                } catch (error) {
-                    console.error("Logout error:", error);
-                    alert("حدث خطأ أثناء تسجيل الخروج");
-                }
-            }
-        }
-
-        // Application functions
+        
+        // Show screen function
         function showScreen(screenId) {
             document.querySelectorAll(".screen").forEach(screen => {
                 screen.style.display = "none";
             });
             document.getElementById(screenId).style.display = "block";
+            
+            // Add animation class
+            document.getElementById(screenId).classList.add('fade-in');
         }
-
+        
+        // Login function
+        function login() {
+            const empId = document.getElementById("empId").value.trim();
+            const password = document.getElementById("password").value;
+            const errorElement = document.getElementById("loginErrors");
+            
+            errorElement.style.display = "none";
+            errorElement.textContent = "";
+            
+            if (!empId || !password) {
+                errorElement.textContent = "الرجاء إدخال الرقم الوظيفي وكلمة المرور";
+                errorElement.style.display = "block";
+                return;
+            }
+            
+            // Simulate login process
+            if (empId === "70062" && password === "123456") {
+                // Admin login
+                document.getElementById("userWelcome").textContent = "مرحباً المسؤول";
+                document.getElementById("settingsBtn").style.display = "block";
+                document.getElementById("usersBtn").style.display = "block";
+                showScreen("dashboardScreen");
+            } 
+            else if (empId && password === "123456") {
+                // Regular user login
+                document.getElementById("userWelcome").textContent = `مرحباً ${empId}`;
+                document.getElementById("settingsBtn").style.display = "none";
+                document.getElementById("usersBtn").style.display = "none";
+                showScreen("dashboardScreen");
+            } 
+            else {
+                errorElement.textContent = "خطأ في تسجيل الدخول: الرقم الوظيفي أو كلمة المرور غير صحيحة";
+                errorElement.style.display = "block";
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm("هل أنت متأكد من تسجيل الخروج؟")) {
+                showScreen("loginScreen");
+                document.getElementById("empId").value = "";
+                document.getElementById("password").value = "";
+            }
+        }
+        
+        // Open screen function
         function openScreen(screenId) {
             showScreen(screenId);
-            
-            if (screenId === "dashboardScreen") {
-                updateUserWelcome();
-            } 
-            else if (screenId === "entryScreen") {
-                clearEntryForm();
-            }
-            else if (screenId === "settingsScreen") {
-                loadSettings();
-            }
-            else if (screenId === "usersScreen") {
-                loadUsersList();
-            }
         }
-
-        function updateUserWelcome() {
-            if (currentUser) {
-                document.getElementById("userWelcome").textContent = `مرحباً ${currentUser.name}`;
-                document.getElementById("siteName").value = currentUser.site || "";
-            }
-        }
-
-        function populateSelect(id, options) {
-            const select = document.getElementById(id);
-            select.innerHTML = '';
-            
-            const defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.textContent = `اختر ${id === 'sampleType' ? 'نوع العينة' : 
-                                      id === 'testType' ? 'نوع الاختبار' : 'نتيجة الفحص'}`;
-            select.appendChild(defaultOption);
-
-            options.forEach(option => {
-                const opt = document.createElement("option");
-                opt.value = option;
-                opt.textContent = option;
-                select.appendChild(opt);
-            });
-        }
-
-        function clearEntryForm() {
-            document.getElementById("dataForm").reset();
-            document.getElementById("siteName").value = currentUser?.site || "";
-            document.getElementById("dateInput").value = new Date().toISOString().slice(0, 10);
-            document.getElementById("entryErrors").textContent = "";
-        }
-
-        async function saveEntry() {
-            const errorElement = document.getElementById("entryErrors");
-            errorElement.textContent = "";
-
-            const animalType = document.getElementById("animalType");
-            const animalTypeText = animalType.options[animalType.selectedIndex].text;
-
-            const entry = {
-                date: document.getElementById("dateInput").value,
-                site: document.getElementById("siteName").value,
-                barnName: document.getElementById("barnName").value.trim(),
-                licenseNo: document.getElementById("licenseNo").value.trim(),
-                animalType: animalTypeText,
-                animalTypeEn: animalType.value,
-                gender: document.getElementById("gender").value,
-                sampleType: document.getElementById("sampleType").value,
-                testType: document.getElementById("testType").value,
-                resultType: document.getElementById("resultType").value,
-                notes: document.getElementById("notes").value.trim(),
-                enteredBy: currentUser.name,
-                entryDate: new Date().toISOString()
-            };
-
-            // Validation
-            const errors = [];
-            if (!entry.date) errors.push("تاريخ الفحص مطلوب");
-            if (!entry.site) errors.push("الموقع مطلوب");
-            if (!entry.barnName) errors.push("اسم الحظيرة مطلوب");
-            if (!entry.animalType) errors.push("نوع الحيوان مطلوب");
-            if (!entry.gender) errors.push("جنس الحيوان مطلوب");
-            if (!entry.sampleType) errors.push("نوع العينة مطلوب");
-            if (!entry.testType) errors.push("نوع الاختبار مطلوب");
-            if (!entry.resultType) errors.push("نتيجة الفحص مطلوبة");
-
-            if (errors.length > 0) {
-                errorElement.textContent = errors.join("، ");
-                return;
-            }
-
-            try {
-                await saveEntryToFirebase(entry);
-                entries.push(entry);
-                alert("تم حفظ البيانات بنجاح");
-                clearEntryForm();
-                goBack();
-            } catch (error) {
-                errorElement.textContent = "حدث خطأ أثناء حفظ البيانات: " + error.message;
-            }
-        }
-
-        function generateReport() {
-            const fromDate = document.getElementById("fromDate").value;
-            const toDate = document.getElementById("toDate").value;
-            const reportContent = document.getElementById("reportContent");
-
-            if (!fromDate || !toDate) {
-                alert("الرجاء تحديد تاريخ البداية والنهاية");
-                return;
-            }
-
-            const filteredEntries = entries.filter(entry => {
-                return entry.date >= fromDate && entry.date <= toDate;
-            });
-
-            if (filteredEntries.length === 0) {
-                reportContent.innerHTML = `
-                    <div class="no-data">
-                        <p>لا توجد بيانات متاحة للفترة المحددة</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const reportDate = new Date().toLocaleDateString('ar-EG');
-            
-            let html = `
-                <div class="report-header">
-                    <div>
-                        <div class="report-title">تقرير المختبر البيطري</div>
-                        <div class="report-meta">الفترة من ${fromDate} إلى ${toDate} - تاريخ التقرير: ${reportDate}</div>
-                    </div>
-                    <div>
-                        <button class="export-btn" onclick="exportToExcel()">تصدير لإكسل</button>
-                        <button class="print-btn" onclick="printReport()">طباعة التقرير</button>
-                    </div>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>التاريخ</th>
-                            <th>الموقع</th>
-                            <th>نوع الحيوان</th>
-                            <th>نوع الاختبار</th>
-                            <th>النتيجة</th>
-                            <th>ملاحظات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            filteredEntries.forEach((entry, index) => {
-                html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${entry.date}</td>
-                        <td>${entry.site}</td>
-                        <td>${entry.animalType}</td>
-                        <td>${entry.testType}</td>
-                        <td class="${entry.resultType === 'سليم' ? 'text-success' : 
-                                    entry.resultType === 'مريض' ? 'text-danger' : 'text-warning'}">
-                            ${entry.resultType}
-                        </td>
-                        <td>${entry.notes || '-'}</td>
-                    </tr>
-                `;
-            });
-
-            html += `</tbody></table>`;
-            reportContent.innerHTML = html;
-        }
-
-        function printReport() {
-            const printContent = document.getElementById("reportContent").innerHTML;
-            const originalContent = document.body.innerHTML;
-            
-            document.body.innerHTML = `
-                <div style="padding:20px;font-family:'Arial'">
-                    <h1 style="text-align:center;margin-bottom:30px">تقرير المختبر البيطري</h1>
-                    ${printContent}
-                </div>
-            `;
-            
-            window.print();
-            document.body.innerHTML = originalContent;
-            showScreen("reportScreen");
-        }
-
-        function exportToExcel() {
-            const table = document.querySelector("#reportContent table");
-            if (!table) {
-                alert("لا يوجد بيانات للتصدير");
-                return;
-            }
-
-            let csv = [];
-            const rows = table.querySelectorAll("tr");
-            
-            for (let i = 0; i < rows.length; i++) {
-                let row = [], cols = rows[i].querySelectorAll("td, th");
-                
-                for (let j = 0; j < cols.length; j++) {
-                    row.push(cols[j].innerText);
-                }
-                
-                csv.push(row.join(","));
-            }
-
-            const csvContent = csv.join("\n");
-            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute("href", url);
-            link.setAttribute("download", `تقرير_المختبر_${new Date().toISOString().slice(0,10)}.csv`);
-            link.style.visibility = "hidden";
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function loadSettings() {
-            document.getElementById("sampleList").value = settings.samples.join(", ");
-            document.getElementById("testList").value = settings.tests.join(", ");
-            document.getElementById("resultList").value = settings.results.join(", ");
-            document.getElementById("settingsErrors").textContent = "";
-        }
-
-        async function saveSettings() {
-            const errorElement = document.getElementById("settingsErrors");
-            errorElement.textContent = "";
-
-            try {
-                settings.samples = document.getElementById("sampleList").value.split(",")
-                    .map(item => item.trim()).filter(item => item);
-                settings.tests = document.getElementById("testList").value.split(",")
-                    .map(item => item.trim()).filter(item => item);
-                settings.results = document.getElementById("resultList").value.split(",")
-                    .map(item => item.trim()).filter(item => item);
-
-                await saveSettingsToFirebase();
-                
-                // Update dropdowns
-                populateSelect("sampleType", settings.samples);
-                populateSelect("testType", settings.tests);
-                populateSelect("resultType", settings.results);
-
-                alert("تم حفظ الإعدادات بنجاح");
-            } catch (error) {
-                errorElement.textContent = "حدث خطأ أثناء حفظ الإعدادات: " + error.message;
-            }
-        }
-
-        function loadUsersList() {
-            const usersList = document.getElementById("usersList");
-            usersList.innerHTML = "";
-
-            if (users.length === 0) {
-                usersList.innerHTML = "<p>لا يوجد مستخدمين</p>";
-                return;
-            }
-
-            let html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>الرقم الوظيفي</th>
-                            <th>الاسم</th>
-                            <th>النوع</th>
-                            <th>الموقع</th>
-                            <th>إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            users.forEach((user, index) => {
-                html += `
-                    <tr>
-                        <td>${user.empId}</td>
-                        <td>${user.name}</td>
-                        <td>${user.type}</td>
-                        <td>${user.site}</td>
-                        <td>
-                            <button onclick="editUser(${index})" class="btn-edit">✏️ تعديل</button>
-                            <button onclick="deleteUser(${index})" class="btn-delete">🗑️ حذف</button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            html += `</tbody></table>`;
-            usersList.innerHTML = html;
-        }
-
-        async function addUser() {
-            const errorElement = document.getElementById("userErrors");
-            errorElement.textContent = "";
-
-            const empId = document.getElementById("newEmpId").value.trim();
-            const name = document.getElementById("newName").value.trim();
-            const type = document.getElementById("newType").value;
-            const site = document.getElementById("newSite").value.trim();
-            const password = document.getElementById("newPassword").value;
-
-            // Validation
-            const errors = [];
-            if (!empId) errors.push("الرقم الوظيفي مطلوب");
-            if (!name) errors.push("اسم المستخدم مطلوب");
-            if (!type) errors.push("نوع المستخدم مطلوب");
-            if (!site) errors.push("الموقع مطلوب");
-            if (!password || password.length < 6) errors.push("كلمة المرور مطلوبة (6 أحرف على الأقل)");
-
-            if (errors.length > 0) {
-                errorElement.textContent = errors.join("، ");
-                return;
-            }
-
-            // Check if user already exists
-            if (users.some(u => u.empId === empId)) {
-                errorElement.textContent = "الرقم الوظيفي مسجل مسبقاً";
-                return;
-            }
-
-            // Set permissions based on user type
-            const permissions = {
-                manageUsers: type === "مسؤول",
-                manageSettings: type === "مسؤول",
-                viewReports: true,
-                addEntries: true
-            };
-
-            const newUser = { empId, name, type, site, permissions };
-
-            try {
-                // Create user in Authentication
-                await createUserWithEmailAndPassword(
-                    auth, 
-                    `${empId}@vetlab.com`, 
-                    password
-                );
-                
-                // Save user to Firestore
-                await saveUserToFirebase(newUser);
-                users.push(newUser);
-                
-                // Clear form
-                document.getElementById("newEmpId").value = "";
-                document.getElementById("newName").value = "";
-                document.getElementById("newType").value = "";
-                document.getElementById("newSite").value = "";
-                document.getElementById("newPassword").value = "";
-
-                alert("تم إضافة المستخدم بنجاح");
-                loadUsersList();
-            } catch (error) {
-                console.error("Error adding user:", error);
-                errorElement.textContent = "حدث خطأ أثناء إضافة المستخدم: " + 
-                    (error.code === 'auth/email-already-in-use' ? "المستخدم موجود بالفعل" :
-                     error.message);
-            }
-        }
-
-        function editUser(index) {
-            const user = users[index];
-            if (!user) return;
-
-            if (!confirm(`هل تريد تعديل بيانات المستخدم ${user.name}؟`)) return;
-
-            document.getElementById("newEmpId").value = user.empId;
-            document.getElementById("newName").value = user.name;
-            document.getElementById("newType").value = user.type;
-            document.getElementById("newSite").value = user.site;
-            document.getElementById("newPassword").value = "";
-
-            // Remove the old user from the array
-            users.splice(index, 1);
-        }
-
-        async function deleteUser(index) {
-            const user = users[index];
-            if (!user) return;
-
-            if (user.empId === "70062") {
-                alert("لا يمكن حذف المسؤول الرئيسي");
-                return;
-            }
-
-            if (confirm(`هل أنت متأكد من حذف المستخدم ${user.name}؟`)) {
-                try {
-                    await deleteUserFromFirebase(user.empId);
-                    users.splice(index, 1);
-                    loadUsersList();
-                    alert("تم حذف المستخدم بنجاح");
-                } catch (error) {
-                    console.error("Error deleting user:", error);
-                    alert("حدث خطأ أثناء حذف المستخدم: " + error.message);
-                }
-            }
-        }
-
+        
+        // Go back function
         function goBack() {
-            if (currentUser) {
-                showScreen("dashboardScreen");
-            } else {
-                showScreen("loginScreen");
-            }
+            showScreen("dashboardScreen");
         }
-
-        // Initialize the app when loaded
+        
+        // Save entry function
+        function saveEntry() {
+            const errorElement = document.getElementById("entryErrors");
+            errorElement.style.display = "none";
+            
+            // Form validation
+            const requiredFields = [
+                'dateInput', 'siteName', 'barnName', 'animalType',
+                'gender', 'sampleType', 'testType', 'resultType'
+            ];
+            
+            let isValid = true;
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (!element.value) {
+                    isValid = false;
+                    element.style.borderColor = "red";
+                } else {
+                    element.style.borderColor = "#ddd";
+                }
+            });
+            
+            if (!isValid) {
+                errorElement.textContent = "الرجاء تعبئة جميع الحقول المطلوبة";
+                errorElement.style.display = "block";
+                return;
+            }
+            
+            // Simulate successful save
+            alert("تم حفظ البيانات بنجاح!");
+            document.getElementById("dataForm").reset();
+            goBack();
+        }
+        
+        // Set up form submission
+        document.getElementById("dataForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            saveEntry();
+        });
+        
+        // Initialize the app
         window.onload = startApp;
         
         // Expose functions to HTML
@@ -664,182 +729,6 @@
         window.openScreen = openScreen;
         window.goBack = goBack;
         window.saveEntry = saveEntry;
-        window.generateReport = generateReport;
-        window.printReport = printReport;
-        window.exportToExcel = exportToExcel;
-        window.saveSettings = saveSettings;
-        window.addUser = addUser;
-        window.editUser = editUser;
-        window.deleteUser = deleteUser;
     </script>
-</head>
-<body>
-    <!-- Welcome Screen -->
-    <div id="welcomeScreen" class="screen">
-        <h1 style="text-align: center; margin-top: 100px;">مرحباً بكم في نظام المختبر البيطري</h1>
-        <p style="text-align: center;">جاري التحميل...</p>
-    </div>
-
-    <!-- Login Screen -->
-    <div id="loginScreen" class="screen">
-        <h2 style="text-align: center;">تسجيل الدخول</h2>
-        <div style="max-width: 400px; margin: 0 auto;">
-            <div class="form-group">
-                <label for="empId">الرقم الوظيفي:</label>
-                <input type="text" id="empId" placeholder="أدخل الرقم الوظيفي">
-            </div>
-            <div class="form-group">
-                <label for="password">كلمة المرور:</label>
-                <input type="password" id="password" placeholder="أدخل كلمة المرور">
-            </div>
-            <div id="loginErrors" class="error" style="min-height: 20px;"></div>
-            <button onclick="login()" style="margin-top: 20px;">تسجيل الدخول</button>
-        </div>
-    </div>
-
-    <!-- Dashboard Screen -->
-    <div id="dashboardScreen" class="screen">
-        <h2 id="userWelcome" style="text-align: center;"></h2>
-        <div style="max-width: 500px; margin: 0 auto;">
-            <button onclick="openScreen('entryScreen')" style="margin-bottom: 10px;">إدخال بيانات جديدة</button>
-            <button onclick="openScreen('reportScreen')" style="margin-bottom: 10px;">عرض التقارير</button>
-            <button id="settingsBtn" onclick="openScreen('settingsScreen')" style="margin-bottom: 10px;">الإعدادات</button>
-            <button id="usersBtn" onclick="openScreen('usersScreen')" style="margin-bottom: 10px;">إدارة المستخدمين</button>
-            <button onclick="logout()" style="background-color: #f44336;">تسجيل الخروج</button>
-        </div>
-    </div>
-
-    <!-- Entry Screen -->
-    <div id="entryScreen" class="screen">
-        <h2 style="text-align: center;">إدخال بيانات جديدة</h2>
-        <form id="dataForm" style="max-width: 600px; margin: 0 auto;">
-            <div class="form-group">
-                <label for="dateInput">تاريخ الفحص:</label>
-                <input type="date" id="dateInput" required>
-            </div>
-            <div class="form-group">
-                <label for="siteName">الموقع:</label>
-                <input type="text" id="siteName" required>
-            </div>
-            <div class="form-group">
-                <label for="barnName">اسم الحظيرة:</label>
-                <input type="text" id="barnName" required>
-            </div>
-            <div class="form-group">
-                <label for="licenseNo">رقم الرخصة:</label>
-                <input type="text" id="licenseNo">
-            </div>
-            <div class="form-group">
-                <label for="animalType">نوع الحيوان:</label>
-                <select id="animalType" required></select>
-            </div>
-            <div class="form-group">
-                <label for="gender">جنس الحيوان:</label>
-                <select id="gender" required>
-                    <option value="">اختر الجنس</option>
-                    <option value="ذكر">ذكر</option>
-                    <option value="أنثى">أنثى</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="sampleType">نوع العينة:</label>
-                <select id="sampleType" required></select>
-            </div>
-            <div class="form-group">
-                <label for="testType">نوع الاختبار:</label>
-                <select id="testType" required></select>
-            </div>
-            <div class="form-group">
-                <label for="resultType">نتيجة الفحص:</label>
-                <select id="resultType" required></select>
-            </div>
-            <div class="form-group">
-                <label for="notes">ملاحظات:</label>
-                <textarea id="notes" rows="3"></textarea>
-            </div>
-            <div id="entryErrors" class="error" style="min-height: 20px;"></div>
-            <button type="submit">حفظ البيانات</button>
-            <button type="button" onclick="goBack()" style="background-color: #f44336; margin-top: 10px;">العودة</button>
-        </form>
-    </div>
-
-    <!-- Report Screen -->
-    <div id="reportScreen" class="screen">
-        <h2 style="text-align: center;">التقارير</h2>
-        <div style="max-width: 600px; margin: 0 auto;">
-            <div class="form-group">
-                <label for="fromDate">من تاريخ:</label>
-                <input type="date" id="fromDate">
-            </div>
-            <div class="form-group">
-                <label for="toDate">إلى تاريخ:</label>
-                <input type="date" id="toDate">
-            </div>
-            <button onclick="generateReport()">عرض التقرير</button>
-            <button onclick="goBack()" style="background-color: #f44336; margin-top: 10px;">العودة</button>
-            <div id="reportContent" style="margin-top: 20px;"></div>
-        </div>
-    </div>
-
-    <!-- Settings Screen -->
-    <div id="settingsScreen" class="screen">
-        <h2 style="text-align: center;">الإعدادات</h2>
-        <div style="max-width: 600px; margin: 0 auto;">
-            <div class="form-group">
-                <label for="sampleList">أنواع العينات (مفصولة بفاصلة):</label>
-                <textarea id="sampleList" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="testList">أنواع الاختبارات (مفصولة بفاصلة):</label>
-                <textarea id="testList" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="resultList">النتائج المحتملة (مفصولة بفاصلة):</label>
-                <textarea id="resultList" rows="3"></textarea>
-            </div>
-            <div id="settingsErrors" class="error" style="min-height: 20px;"></div>
-            <button onclick="saveSettings()">حفظ الإعدادات</button>
-            <button onclick="goBack()" style="background-color: #f44336; margin-top: 10px;">العودة</button>
-        </div>
-    </div>
-
-    <!-- Users Management Screen -->
-    <div id="usersScreen" class="screen">
-        <h2 style="text-align: center;">إدارة المستخدمين</h2>
-        <div style="max-width: 800px; margin: 0 auto;">
-            <h3>إضافة مستخدم جديد</h3>
-            <div class="form-group">
-                <label for="newEmpId">الرقم الوظيفي:</label>
-                <input type="text" id="newEmpId">
-            </div>
-            <div class="form-group">
-                <label for="newName">اسم المستخدم:</label>
-                <input type="text" id="newName">
-            </div>
-            <div class="form-group">
-                <label for="newType">نوع المستخدم:</label>
-                <select id="newType">
-                    <option value="">اختر النوع</option>
-                    <option value="مسؤول">مسؤول</option>
-                    <option value="فني">فني</option>
-                    <option value="سوق المواشي">سوق المواشي</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="newSite">الموقع:</label>
-                <input type="text" id="newSite">
-            </div>
-            <div class="form-group">
-                <label for="newPassword">كلمة المرور:</label>
-                <input type="password" id="newPassword">
-            </div>
-            <div id="userErrors" class="error" style="min-height: 20px;"></div>
-            <button onclick="addUser()">إضافة مستخدم</button>
-            
-            <h3 style="margin-top: 30px;">قائمة المستخدمين</h3>
-            <div id="usersList"></div>
-            <button onclick="goBack()" style="background-color: #f44336; margin-top: 20px;">العودة</button>
-        </div>
-    </div>
 </body>
 </html>
