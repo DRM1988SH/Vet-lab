@@ -596,6 +596,173 @@
                 </form>
             </div>
         </div>
+
+        <!-- Report Screen -->
+        <div id="reportScreen" class="screen">
+            <div class="form-header">
+                <h2><i class="fas fa-chart-bar"></i> تقارير الفحوصات</h2>
+                <p>عرض وتحليل نتائج الفحوصات</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="card">
+                    <h3><i class="fas fa-filter"></i> فلترة النتائج</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label for="fromDate">من تاريخ:</label>
+                            <input type="date" id="fromDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="toDate">إلى تاريخ:</label>
+                            <input type="date" id="toDate">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reportType">نوع التقرير:</label>
+                        <select id="reportType">
+                            <option value="all">جميع النتائج</option>
+                            <option value="healthy">النتائج السليمة فقط</option>
+                            <option value="diseased">النتائج المرضية فقط</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="generateReport()" style="margin-top: 15px;">
+                        <i class="fas fa-file-pdf"></i> إنشاء التقرير
+                    </button>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <h3><i class="fas fa-table"></i> نتائج الفحوصات</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>الموقع</th>
+                                    <th>نوع الحيوان</th>
+                                    <th>نوع الاختبار</th>
+                                    <th>النتيجة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportResults">
+                                <!-- سيتم ملؤه بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <button onclick="goBack()" style="margin-top: 20px; background-color: var(--danger);">
+                    <i class="fas fa-arrow-left"></i> العودة
+                </button>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settingsScreen" class="screen">
+            <div class="form-header">
+                <h2><i class="fas fa-cog"></i> الإعدادات</h2>
+                <p>تخصيص إعدادات النظام</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="card">
+                    <h3><i class="fas fa-user-cog"></i> إعدادات الحساب</h3>
+                    <div class="form-group">
+                        <label for="currentPassword">كلمة المرور الحالية:</label>
+                        <input type="password" id="currentPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">كلمة المرور الجديدة:</label>
+                        <input type="password" id="newPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">تأكيد كلمة المرور:</label>
+                        <input type="password" id="confirmPassword">
+                    </div>
+                    
+                    <button onclick="changePassword()" style="margin-top: 15px;">
+                        <i class="fas fa-save"></i> حفظ التغييرات
+                    </button>
+                </div>
+                
+                <button onclick="goBack()" style="margin-top: 20px; background-color: var(--danger);">
+                    <i class="fas fa-arrow-left"></i> العودة
+                </button>
+            </div>
+        </div>
+
+        <!-- Users Screen -->
+        <div id="usersScreen" class="screen">
+            <div class="form-header">
+                <h2><i class="fas fa-users-cog"></i> إدارة المستخدمين</h2>
+                <p>إضافة وتعديل مستخدمي النظام</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="card">
+                    <h3><i class="fas fa-user-plus"></i> إضافة مستخدم جديد</h3>
+                    <div class="form-group">
+                        <label for="newUserId">الرقم الوظيفي:</label>
+                        <input type="text" id="newUserId">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserName">اسم المستخدم:</label>
+                        <input type="text" id="newUserName">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserPassword">كلمة المرور:</label>
+                        <input type="password" id="newUserPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">صلاحية المستخدم:</label>
+                        <select id="userRole">
+                            <option value="user">مستخدم عادي</option>
+                            <option value="admin">مسؤول النظام</option>
+                        </select>
+                    </div>
+                    
+                    <button onclick="addUser()" style="margin-top: 15px;">
+                        <i class="fas fa-save"></i> حفظ المستخدم
+                    </button>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <h3><i class="fas fa-users"></i> قائمة المستخدمين</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الرقم الوظيفي</th>
+                                    <th>اسم المستخدم</th>
+                                    <th>الصلاحية</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersList">
+                                <tr>
+                                    <td>70062</td>
+                                    <td>المسؤول</td>
+                                    <td>مسؤول النظام</td>
+                                    <td>
+                                        <button style="padding: 5px 10px; background-color: var(--warning);">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button style="padding: 5px 10px; background-color: var(--danger);">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <button onclick="goBack()" style="margin-top: 20px; background-color: var(--danger);">
+                    <i class="fas fa-arrow-left"></i> العودة
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -612,6 +779,8 @@
             // Set today's date as default
             const today = new Date().toISOString().slice(0, 10);
             document.getElementById("dateInput").value = today;
+            document.getElementById("fromDate").value = today;
+            document.getElementById("toDate").value = today;
         }
         
         // Show screen function
@@ -620,9 +789,6 @@
                 screen.style.display = "none";
             });
             document.getElementById(screenId).style.display = "block";
-            
-            // Add animation class
-            document.getElementById(screenId).classList.add('fade-in');
         }
         
         // Login function
@@ -714,6 +880,49 @@
             goBack();
         }
         
+        // Generate report function
+        function generateReport() {
+            // Simulate report generation
+            alert("تم إنشاء التقرير بنجاح!");
+        }
+        
+        // Change password function
+        function changePassword() {
+            const currentPass = document.getElementById("currentPassword").value;
+            const newPass = document.getElementById("newPassword").value;
+            const confirmPass = document.getElementById("confirmPassword").value;
+            
+            if (!currentPass || !newPass || !confirmPass) {
+                alert("الرجاء تعبئة جميع الحقول");
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                alert("كلمة المرور الجديدة غير متطابقة");
+                return;
+            }
+            
+            alert("تم تغيير كلمة المرور بنجاح!");
+            goBack();
+        }
+        
+        // Add user function
+        function addUser() {
+            const userId = document.getElementById("newUserId").value;
+            const userName = document.getElementById("newUserName").value;
+            const password = document.getElementById("newUserPassword").value;
+            
+            if (!userId || !userName || !password) {
+                alert("الرجاء تعبئة جميع الحقول");
+                return;
+            }
+            
+            alert(`تم إضافة المستخدم ${userName} بنجاح!`);
+            document.getElementById("newUserId").value = "";
+            document.getElementById("newUserName").value = "";
+            document.getElementById("newUserPassword").value = "";
+        }
+        
         // Set up form submission
         document.getElementById("dataForm").addEventListener("submit", function(e) {
             e.preventDefault();
@@ -729,6 +938,9 @@
         window.openScreen = openScreen;
         window.goBack = goBack;
         window.saveEntry = saveEntry;
+        window.generateReport = generateReport;
+        window.changePassword = changePassword;
+        window.addUser = addUser;
     </script>
 </body>
 </html>
