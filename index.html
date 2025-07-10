@@ -196,7 +196,18 @@
                     currentUser = user;
                     updateUserWelcome();
                     showScreen("dashboardScreen");
-                    
+                    createUserWithEmailAndPassword(auth, '70062@vetlab.com', '123456')
+  .then(() => {
+    const adminUser = {
+      empId: "70062",
+      name: "Admin",
+      type: "مسؤول",
+      site: "الادارة",
+      permissions: { manageUsers: true, manageSettings: true }
+    };
+    setDoc(doc(db, "users", "70062"), adminUser);
+    alert("تم إنشاء المسؤول بنجاح!");
+  });
                     // Show/hide admin buttons based on permissions
                     const isAdmin = user.permissions?.manageUsers || false;
                     document.getElementById("settingsBtn").style.display = isAdmin ? "block" : "none";
@@ -831,4 +842,4 @@
         </div>
     </div>
 </body>
-</html> 
+</html>
